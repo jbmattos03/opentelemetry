@@ -66,12 +66,37 @@ Manages the OpenTelemetry Collector and auto-instrumentation of the workloads us
 OpenTelemetry supports various methods of monitoring Function-as-a-Service provided by different cloud vendors.
 
 ## Getting started with OpenTelemetry on Python
-### 1. Install open-telemetry
-```python
-pip install open-telemetry
+This folder includes a small demonstration of the practical applications of OpenTelemetry.
+
+It is a small application that collects the CPU and RAM usage of your machine every 5 seconds and exports it to a Prometheus backend server.
+
+To run it, follow these steps:
+### 1. Install necessary libraries
+```bash
+source venv.sh
 ```
 
-### 
+### 1.1 Install Prometheus
+```bash
+sudo pacman -S prometheus
+```
+
+### 2. Begin monitoring
+```bash
+prometheus --config.file=prometheus.yml
+```
+
+```bash
+python3 main.py
+```
+
+### 2.1 Observe results
+Go to http://localhost:8001/metrics to see the Prometheus server.
+
+Go to http://localhost:9090 to use Prometheus' GUI to see and query results.
+
+### 3. Stop monitoring
+Press CTRL + C.
 
 ## Glossary
 1. Observability: The ability to learn about a system's status at a point in time by asking questions about it.
