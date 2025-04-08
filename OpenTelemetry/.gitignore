@@ -1,0 +1,8 @@
+# Ignore .venv
+.venv
+
+# Ignore time
+time
+
+# Ignore data
+data
