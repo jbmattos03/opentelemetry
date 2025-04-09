@@ -96,7 +96,14 @@ sudo pacman -S prometheus
 ```
 
 #### 1.1.2 Modify /etc/prometheus/prometheus.yml
-Modify the **global** and **scrape_configs** sections based on the example provided in **src/prometheus.yml**.
+Modify the **global** and **scrape_configs** sections based on the example provided in **src/prometheus.txt**. 
+
+You can use your text editor of choice to do so. The following example uses nano: 
+
+```bash
+cd /etc/prometheus
+nano prometheus.yml
+```
 
 #### 1.1.3 Enable Prometheus (if you have just installed it)
 ```bash
