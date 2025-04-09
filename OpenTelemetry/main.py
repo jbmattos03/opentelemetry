@@ -20,6 +20,7 @@ from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import ConsoleMetricExporter, PeriodicExportingMetricReader
 from opentelemetry.exporter.prometheus import PrometheusMetricReader
+from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from prometheus_client import start_http_server
 
 # =================================================================================
@@ -41,6 +42,7 @@ class SystemMonitor:
 
         self.console_exporter = ConsoleMetricExporter()
         self.prometheus_exporter = PrometheusMetricReader()
+        #self.collector_exporter = OTLPMetricExporter(endpoint="http://localhost:4318")
 
     def set_meter(self):
         """
