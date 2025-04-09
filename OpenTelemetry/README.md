@@ -57,7 +57,21 @@ It can support various file formats for telemetry data, such as:
 + Jaeger
 
 #### 3. Language-specific API and SDK implementations
+OpenTelemetry has language-specific SDKs (software development kits) that allow you to use the OTel API to generate telemetry data and export it to your preferred backend.
 
+They also let you incorporate instrumentation libraries for common libraries and frameworks that you can use to connect to manual instrumentation in your application.
+
++ Instrumentation libraries: OpenTelemetry supports a broad number of components that generate relevant telemetry data from popular libraries and frameworks for supported languages.
+
++ Exporters: An intermediate between an application and the backend to which you want to export the data. It's best practice to use them in production environments. OTLP exporters are designed with the OpenTelemetry data model in mind, emitting OTel data without any **loss of information.** Furthermore, many tools that operate on telemetry data support OTLP.
+
++ Zero-code instrumentation: Provides a way to instrument an application without touching its source code (when applicable).
+
++ Resource detectors: A resource represents an entity producing telemetry as resource attributes. The language specific implementations of OpenTelemetry provide resource detection from the OTEL_RESOURCE_ATTRIBUTES environment variable and for many common entities, like process runtime, service, host, or operating system.
+
++  Cross-service propagators: Context propagation happens through instrumentation libraries. If needed, you can use propagators yourself to serialize and deserialize cross-cutting concerns such as the context of a span and baggage.
+
++  Samplers: Processes that restrict the amount of traces generated. Each language-specific implementation of OTel offers its own head samplers.
 
 #### 4. Kubernetes operator
 Manages the OpenTelemetry Collector and auto-instrumentation of the workloads using OpenTelemetry.
