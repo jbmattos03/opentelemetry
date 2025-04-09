@@ -1,8 +1,0 @@
-https://opentelemetry.io/docs/languages/python/
-https://opentelemetry-python.readthedocs.io/en/latest/sdk/metrics.export.html
-https://opentelemetry-python.readthedocs.io/en/latest/sdk/metrics.html
-https://opentelemetry-python.readthedocs.io/en/latest/api/metrics.html#opentelemetry.metrics.Observation
-https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusexporter/README.md
-https://github.com/prometheus/prometheus/blob/main/documentation/examples/prometheus.yml
-
-https://wiki.archlinux.org/title/Prometheus
