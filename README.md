@@ -90,21 +90,40 @@ To run it, follow these steps:
 source venv.sh
 ```
 
-### 1.1 Install Prometheus
+#### 1.1.1 Install Prometheus
 ```bash
 sudo pacman -S prometheus
 ```
 
+#### 1.1.2 Modify /etc/prometheus/prometheus.yml
+Modify the **global** and **scrape_configs** sections based on the example provided in **src/prometheus.yml**.
+
+#### 1.1.3 Enable Prometheus (if you have just installed it)
+```bash
+sudo systemctl enable --now prometheus
+```
+
+#### 1.1.4 Restart Prometheus (if you had it running and modified prometheus.yml)
+```bash
+sudo systemctl restart prometheus
+```
+
+#### 1.1.5 Verify Prometheus is running
+```bash
+sudo systemctl status prometheus
+```
+
+You should see something like this:
+
+![Screenshot of a bit of the output of sudo systemctl status prometheus. The image shows that prometheus is enabled and active (running).](imgs/image-1.png)
+
 ### 2. Begin monitoring
 ```bash
 prometheus --config.file=prometheus.yml
-```
-
-```bash
 python3 main.py
 ```
 
-### 2.1 Observe results
+#### 2.1 Observe results
 Go to http://localhost:8001/metrics to see the Prometheus server.
 
 Go to http://localhost:9090 to use Prometheus' GUI to see and query results.
