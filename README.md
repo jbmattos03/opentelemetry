@@ -84,38 +84,49 @@ This folder includes a small demonstration of the practical applications of Open
 
 It is a small application that collects the CPU and RAM usage of your machine every 5 seconds and exports it to a Prometheus backend server.
 
+There are two versions of this app: 
++ app.py exports the telemetry data directly to Prometheus
++ app_collector.py exports it to OpenTelemetry Collector, which exposes the data to Prometheus.
+
 To run it, follow these steps:
-### 1. Install necessary libraries
+
+### 1. Preparing the environment
+First, make sure you are in src:
+
+```bash
+cd src
+```
+
+Then, run:
 ```bash
 source venv.sh
 ```
 
-#### 1.1.1 Install Prometheus
+### 1.1 Install Prometheus
 ```bash
 sudo pacman -S prometheus
 ```
 
-#### 1.1.2 Modify /etc/prometheus/prometheus.yml
+#### 1.1.1 Modify /etc/prometheus/prometheus.yml
 Modify the **global** and **scrape_configs** sections based on the example provided in **src/prometheus.txt**. 
 
 You can use your text editor of choice to do so. The following example uses nano: 
 
 ```bash
-cd /etc/prometheus
-nano prometheus.yml
+nano /etc/prometheus/prometheus.yml
 ```
 
-#### 1.1.3 Enable Prometheus (if you have just installed it)
+#### 1.1.2 Enable Prometheus (if you have just installed it)
 ```bash
 sudo systemctl enable --now prometheus
 ```
 
-#### 1.1.4 Restart Prometheus (if you had it running and modified prometheus.yml)
+#### 1.1.3 Restart Prometheus (if you had it running and modified prometheus.yml)
 ```bash
 sudo systemctl restart prometheus
 ```
 
-#### 1.1.5 Verify Prometheus is running
+#### 1.1.4 Verify Prometheus is running
 ```bash
 sudo systemctl status prometheus
 ```
@@ -124,14 +135,40 @@ You should see something like this:
 
 ![Screenshot of a bit of the output of sudo systemctl status prometheus. The image shows that prometheus is enabled and active (running).](imgs/image-1.png)
 
-### 2. Begin monitoring
+### 1.2 (Optional) Install Docker
+Open a new terminal (CTRL+ALT+T), then run:
+
 ```bash
-prometheus --config.file=prometheus.yml
-python3 main.py
+sudo pacman -S docker-compose
+```
+
+#### 1.2.1 Pull an image of OpenTelemetry Collector
+In this project, OpenTelemetry Collector Core is being used.
+
+```bash
+sudo docker pull otel/opentelemetry-collector
+```
+
+#### 1.2.2 Run OpenTelemetry Collector
+```bash
+sudo docker run --rm -p 4318:4318 -p 8889:8889 -v "$(pwd)/otel_collector_config.yaml":/etc/otelcol/config.yaml otel/opentelemetry-collector:latest
+```
+
+### 2. Begin monitoring
+Open a new terminal (CTRL+ALT+T) and run:
+
+```bash
+python3 app.py
+```
+
+Or:
+
+```bash
+python3 app_collector.py
 ```
 
 #### 2.1 Observe results
-Go to http://localhost:8001/metrics to see the Prometheus server.
+Go to http://localhost:8001/metrics to see the Prometheus server (if you are running app.py).
 
 Go to http://localhost:9090 to use Prometheus' GUI to see and query results.
 
