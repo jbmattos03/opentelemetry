@@ -1,3 +1,5 @@
+Documentation and other information used to develop this project:
+
 https://opentelemetry.io/docs/languages/python/
 https://opentelemetry-python.readthedocs.io/en/latest/sdk/metrics.export.html
 https://opentelemetry-python.readthedocs.io/en/latest/sdk/metrics.html
@@ -6,6 +8,7 @@ https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/expo
 https://github.com/prometheus/prometheus/blob/main/documentation/examples/prometheus.yml
 https://betterstack.com/community/guides/observability/opentelemetry-collector/#exploring-the-opentelemetry-collector-components
 https://developer.couchbase.com/tutorial-configure-prometheus
+https://last9.io/blog/opentelemetry-collector-with-docker/
 
 https://wiki.archlinux.org/title/Prometheus
 
