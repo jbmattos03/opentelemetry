@@ -5,8 +5,8 @@ and Prometheus server.
 It also prints the metrics to the console.
 
 The script uses the psutil library to collect the CPU and RAM usage metrics.
-The OpenTelemetry library is used to set up the monitoring system and collect the metrics.
-The Prometheus library is used to set up the Prometheus server and expose the metrics.
+The OpenTelemetry libraries are used to set up the monitoring system and collect the metrics.
+The prometheus_client library is used to set up the Prometheus server and expose the metrics.
 The program uses an OOP approach to organize the code and make it more modular.
 """
 
@@ -20,7 +20,6 @@ from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import ConsoleMetricExporter, PeriodicExportingMetricReader
 from opentelemetry.exporter.prometheus import PrometheusMetricReader
-from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from prometheus_client import start_http_server
 
 # =================================================================================
@@ -37,30 +36,31 @@ class SystemMonitor:
         """
         This method sets up the exporters.
         The console exporter is used to print the metrics to the console.
-        The Prometheus exporter is used to expose and send the metrics to the Prometheus server.
+        The Prometheus reader is used to expose and send the metrics to the Prometheus server.
         """
-
         self.console_exporter = ConsoleMetricExporter()
-        self.prometheus_exporter = PrometheusMetricReader()
-        #self.collector_exporter = OTLPMetricExporter(endpoint="http://localhost:4318")
+    
+    def set_readers(self):
+        """
+        This method sets up the readers.
+        PeriodicExportingMetricReader is used to collect the metrics every 5 seconds.
+        """
+        self.prometheus_reader = PrometheusMetricReader()
+        self.console_reader = PeriodicExportingMetricReader(self.console_exporter, export_interval_millis=5000)
 
     def set_meter(self):
         """
         This method sets up the meter.
         The meter is used to create and manage metrics.
         """
-
         self.meter = metrics.get_meter("system_monitor")
 
-    def set_collector(self):
+    def set_provider(self):
         """
         This method sets up the OpenTelemetry metrics provider.
-        The PeriodicExportingMetricReader is used to collect the metrics every 5 seconds.
-        The MeterProvider is used to manage the metrics.
+        MeterProvider is used to manage the metrics.
         """
-
-        self.console_reader = PeriodicExportingMetricReader(self.console_exporter, export_interval_millis=5000)
-        self.provider = MeterProvider(metric_readers=[self.console_reader, self.prometheus_exporter])
+        self.provider = MeterProvider(metric_readers=[self.console_reader, self.prometheus_reader])
         metrics.set_meter_provider(self.provider)
 
     def set_metrics(self):
@@ -68,16 +68,15 @@ class SystemMonitor:
         This method sets up the metrics.
         The CPU and RAM usage metrics are created as observable counters.
         """
-
         # Create instruments
         self.cpu_gauge = self.meter.create_observable_counter(
-            "cpu_usage",
+            "cpu_usage_total",
             callbacks=[self.cpu_callback],
             description="CPU usage percentage",
         )
 
         self.ram_gauge = self.meter.create_observable_counter(
-            "ram_usage",
+            "ram_usage_total",
             callbacks=[self.ram_callback],
             description="RAM usage percentage",
         )
@@ -122,11 +121,11 @@ class SystemMonitor:
         collect the metrics.
         It will also print the metrics to the console.
         """
-
         print("Starting system monitoring...")
 
         try:
-            self.set_collector()
+            self.set_readers()
+            self.set_provider()
 
             while True:
                 # Keep the program alive, waiting for metrics to be collected
