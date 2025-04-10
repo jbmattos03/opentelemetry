@@ -1,7 +1,6 @@
 """
 This script monitors the CPU and RAM usage of a system using OpenTelemetry and Prometheus.
-It collects the metrics every 5 seconds and sends them to the OpenTelemetry Collector
-and Prometheus server.
+It collects the metrics every 5 seconds and sends them to a Prometheus server.
 It also prints the metrics to the console.
 
 The script uses the psutil library to collect the CPU and RAM usage metrics.
@@ -36,7 +35,6 @@ class SystemMonitor:
         """
         This method sets up the exporters.
         The console exporter is used to print the metrics to the console.
-        The Prometheus reader is used to expose and send the metrics to the Prometheus server.
         """
         self.console_exporter = ConsoleMetricExporter()
     
@@ -44,6 +42,7 @@ class SystemMonitor:
         """
         This method sets up the readers.
         PeriodicExportingMetricReader is used to collect the metrics every 5 seconds.
+        PrometheusMetricReader is used to expose the metrics to the Prometheus server.
         """
         self.prometheus_reader = PrometheusMetricReader()
         self.console_reader = PeriodicExportingMetricReader(self.console_exporter, export_interval_millis=5000)

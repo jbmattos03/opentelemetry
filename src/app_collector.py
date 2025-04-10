@@ -2,11 +2,9 @@
 This script monitors the CPU and RAM usage of a system using OpenTelemetry and Prometheus.
 It collects the metrics every 5 seconds and sends them to the OpenTelemetry Collector
 and Prometheus server.
-It also prints the metrics to the console.
 
 The script uses the psutil library to collect the CPU and RAM usage metrics.
-The OpenTelemetry library is used to set up the monitoring system and collect the metrics.
-The Prometheus library is used to set up the Prometheus server and expose the metrics.
+The OpenTelemetry libraries are used to set up the monitoring system and collect the metrics.
 The program uses an OOP approach to organize the code and make it more modular.
 """
 
@@ -33,7 +31,7 @@ class SystemMonitor:
     def set_exporters(self):
         """
         This method sets up the exporters.
-        The OTLP Collector is used to expose and send the metrics to the Prometheus server.
+        The OTLP Collector is used to collect the data, then expose and send them to the Prometheus server.
         """
         self.collector_exporter = OTLPMetricExporter(endpoint="http://localhost:4318/v1/metrics")
 
@@ -54,8 +52,7 @@ class SystemMonitor:
     def set_provider(self):
         """
         This method sets up the OpenTelemetry metrics provider.
-        The PeriodicExportingMetricReader is used to collect the metrics every 5 seconds.
-        The MeterProvider is used to manage the metrics.
+        MeterProvider is used to manage the metrics.
         """
         self.provider = MeterProvider(metric_readers=[self.collector_reader])
         metrics.set_meter_provider(self.provider)
@@ -100,8 +97,7 @@ class SystemMonitor:
     # =============== Run Function ===============
     def run(self):
         """
-        This method will stall for 5 seconds to let PeriodicExportingMetricReader()
-        collect the metrics.
+        This method will stall for 5 seconds to let PeriodicExportingMetricReader() collect the metrics.
         It will also print the metrics to the console.
         """
         print("Starting system monitoring...")
