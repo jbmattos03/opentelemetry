@@ -80,9 +80,9 @@ Manages the OpenTelemetry Collector and auto-instrumentation of the workloads us
 OpenTelemetry supports various methods of monitoring Function-as-a-Service provided by different cloud vendors.
 
 ## Getting started with OpenTelemetry on Python
-This folder includes a small demonstration of the practical applications of OpenTelemetry.
+This repository includes a small demonstration of the practical applications of OpenTelemetry.
 
-It is a small application that collects the CPU and RAM usage of your machine every 5 seconds and exports it to a Prometheus backend server.
+It is a small application that collects the CPU and RAM usage of your machine every 5 seconds and exports it to Prometheus.
 
 There are two versions of this app: 
 + app.py exports the telemetry data directly to Prometheus
