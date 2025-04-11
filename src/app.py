@@ -13,7 +13,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 
 # Importing libraries
 import time
-from psutil import cpu_percent, virtual_memory
+from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters
 
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
@@ -80,6 +80,24 @@ class SystemMonitor:
             description="RAM usage percentage",
         )
 
+        self.disk_usage = self.meter.create_observable_counter(
+            "disk_usage_total",
+            callbacks=[self.disk_callback],
+            description="Disk usage percentage",
+        )
+
+        self.network_sent = self.meter.create_observable_counter(
+            "network_sent_total",
+            callbacks=[self.network_sent_callback],
+            description="Network sent in bytes",
+        )
+
+        self.network_recv = self.meter.create_observable_counter(
+            "network_recv_total",
+            callbacks=[self.network_recv_callback],
+            description="Network received in bytes",
+        )
+
     # Callback function for CPU metrics
     def cpu_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
@@ -99,6 +117,35 @@ class SystemMonitor:
         The observation is a list of metrics.Observation objects.
         """
         return [metrics.Observation(value=virtual_memory().percent, attributes={})]
+    
+    # Callback function for Disk metrics
+    def disk_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+        """
+        This method is called every 5 seconds to collect the Disk usage metrics.
+        It uses the psutil library to get the Disk usage percentage.
+        The Disk usage percentage is returned as an observation.
+        The observation is a list of metrics.Observation objects.
+        """
+        return [metrics.Observation(value=disk_usage("/").percent, attributes={})]
+    
+    # Callback function for Network metrics
+    def network_sent_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+        """
+        This method is called every 5 seconds to collect Network metrics (sent).
+        It uses the psutil library to get the Network sent in bytes.
+        The Network sent in bytes is returned as an observation.
+        The observation is a list of metrics.Observation objects.
+        """
+        return [metrics.Observation(value=net_io_counters().bytes_sent, attributes={})]
+    
+    def network_recv_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+        """
+        This method is called every 5 seconds to collect Network metrics (received).
+        It uses the psutil library to get the Network sent in bytes.
+        The Network sent in bytes is returned as an observation.
+        The observation is a list of metrics.Observation objects.
+        """
+        return [metrics.Observation(value=net_io_counters().bytes_recv, attributes={})]
     
     # =============== Prometheus Setup ===============
     def set_server(self):
