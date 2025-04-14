@@ -12,7 +12,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 
 # Importing libraries
 import time
-from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters
+from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters, disk_io_counters
 
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
@@ -80,6 +80,18 @@ class SystemMonitor:
             description="Disk usage percentage",
         )
 
+        self.disk_read = self.meter.create_observable_counter(
+            "disk_read_total",
+            callbacks=[self.disk_read_callback],
+            description="Disk read in bytes",
+        )
+
+        self.disk_write = self.meter.create_observable_counter(
+            "disk_write_total",
+            callbacks=[self.disk_write_callback],
+            description="Disk write in bytes",
+        )
+
         self.network_sent = self.meter.create_observable_counter(
             "network_sent_total",
             callbacks=[self.network_sent_callback],
@@ -92,7 +104,7 @@ class SystemMonitor:
             description="Network received in bytes",
         )
 
-    # Callback function for CPU metrics
+    # Callback function for Total CPU usage metric
     def cpu_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect the CPU usage metrics.
@@ -102,7 +114,7 @@ class SystemMonitor:
         """
         return [metrics.Observation(value=cpu_percent(interval=None), attributes={})]
 
-    # Callback function for RAM metrics
+    # Callback function for Total RAM Usage metric
     def ram_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect the RAM usage metrics.
@@ -112,7 +124,7 @@ class SystemMonitor:
         """
         return [metrics.Observation(value=virtual_memory().percent, attributes={})]
     
-    # Callback function for Disk metrics
+    # Callback function for Total Disk Usage metric
     def disk_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect the Disk usage metrics.
@@ -122,7 +134,27 @@ class SystemMonitor:
         """
         return [metrics.Observation(value=disk_usage("/").percent, attributes={})]
     
-    # Callback function for Network metrics
+    # Callback function for Disk Read metric
+    def disk_read_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+        """
+        This method is called every 5 seconds to collect the Disk read metrics.
+        It uses the psutil library to get the Disk read in bytes.
+        The Disk read in bytes is returned as an observation.
+        The observation is a list of metrics.Observation objects.
+        """
+        return [metrics.Observation(value=disk_io_counters().read_bytes, attributes={})]
+    
+    # Callback function for Disk Write metric
+    def disk_write_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+        """
+        This method is called every 5 seconds to collect the Disk write metrics.
+        It uses the psutil library to get the Disk write in bytes.
+        The Disk write in bytes is returned as an observation.
+        The observation is a list of metrics.Observation objects.
+        """
+        return [metrics.Observation(value=disk_io_counters().write_bytes, attributes={})]
+    
+    # Callback functions for Network Sent metric
     def network_sent_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect Network metrics (sent).
@@ -132,6 +164,7 @@ class SystemMonitor:
         """
         return [metrics.Observation(value=net_io_counters().bytes_sent, attributes={})]
     
+    # Callback function for Network Received metric
     def network_recv_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect Network metrics (received).
@@ -153,10 +186,14 @@ class SystemMonitor:
             self.set_readers()
             self.set_provider()
 
-            while True:
+            self.running = True
+
+            while self.running:
                 # Keep the program alive, waiting for metrics to be collected
                 time.sleep(5)
         except KeyboardInterrupt:
+            self.running = False
+
             print("Monitoring stopped.")
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -170,6 +207,7 @@ def main():
 
     # Run the monitoring system
     system_monitor.run()
+
 
 # =================================================================================
 
