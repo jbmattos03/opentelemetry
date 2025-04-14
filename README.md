@@ -91,15 +91,15 @@ There are two versions of this app:
 To run it, follow these steps:
 
 ### 1. Preparing the environment
-First, make sure you are in src:
+First, run:
+```bash
+source venv.sh
+```
+
+Then, make sure you are in src:
 
 ```bash
 cd src
-```
-
-Then, run:
-```bash
-source venv.sh
 ```
 
 ### 1.1 Install Prometheus
