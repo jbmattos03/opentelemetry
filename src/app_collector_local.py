@@ -1,7 +1,7 @@
 """
 This script monitors the CPU and RAM usage of a system using OpenTelemetry and Prometheus.
-It collects the metrics every 5 seconds and sends them to the OpenTelemetry Collector
-and Prometheus server.
+It collects the metrics every 5 seconds and sends them to the OpenTelemetry Collector, which
+then exposes them to Prometheus.
 
 The script uses the psutil library to collect the CPU and RAM usage metrics.
 The OpenTelemetry libraries are used to set up the monitoring system and collect the metrics.
