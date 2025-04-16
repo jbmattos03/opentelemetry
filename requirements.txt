@@ -4,3 +4,4 @@ opentelemetry-exporter-prometheus
 opentelemetry-exporter-otlp
 prometheus_client
 psutil
+dotenv
