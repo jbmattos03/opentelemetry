@@ -52,7 +52,7 @@ class SystemMonitor:
         This method sets up the exporters.
         The OTLP Collector is used to collect the data, then expose and send them to the Prometheus server.
         """
-        self.collector_exporter = OTLPMetricExporter(endpoint=f"http://{os.getenv("IP_ADDR")}:4318/v1/metrics")
+        self.collector_exporter = OTLPMetricExporter(endpoint=f"http://{os.getenv('IP_ADDR')}:4318/v1/metrics")
 
     def set_readers(self):
         """
