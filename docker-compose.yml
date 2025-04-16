@@ -1,0 +1,6 @@
+service:
+  app_collector_local:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ".env"
