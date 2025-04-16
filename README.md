@@ -96,10 +96,10 @@ First, run:
 source venv.sh
 ```
 
-Then, make sure you are in src:
+Then, make sure you are in src/getting_started:
 
 ```bash
-cd src
+cd src/getting_started
 ```
 
 ### 1.1 Install Prometheus
@@ -150,6 +150,7 @@ sudo docker pull otel/opentelemetry-collector
 ```
 
 #### 1.2.2 Run OpenTelemetry Collector
+Make sure you are in OpenTelemetry/, and **not** in src, then run:
 ```bash
 sudo docker run --rm -p 4318:4318 -p 8889:8889 -v "$(pwd)/otel_collector_config.yaml":/etc/otelcol/config.yaml otel/opentelemetry-collector:latest
 ```
