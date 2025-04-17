@@ -1,3 +1,4 @@
+#!/bin/bash
 IP_ADDRESS=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
 
 # Check if the .env file exists; if not, create it
