@@ -7,7 +7,7 @@ This code currently assumes all machines are in the same network and can communi
 
 ## Collecting metrics
 ### Server side
-### Preparing the environment
+#### Preparing the environment
 Run the following command:
 ```bash
 source env.sh
@@ -59,7 +59,7 @@ python3 app_collector_local.py
 
 To stop monitoring, press CTRL+C.
 
-### Running with Docker
+#### Running with Docker
 Run the following command:
 ```bash
 sudo docker compose up
