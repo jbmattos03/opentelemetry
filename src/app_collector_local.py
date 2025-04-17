@@ -27,7 +27,7 @@ from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExp
 # ===================================================================
 
 # Loading environment variables
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv(), override=True)
 
 # =================================================================================
 
