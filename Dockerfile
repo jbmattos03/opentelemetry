@@ -1,10 +1,14 @@
-FROM python:3.13
-COPY requirements.txt /
+FROM python:3.13-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY src/app_collector_local.py /src/
-WORKDIR /src
+COPY src ./src/
 
-USER otel_collector
+WORKDIR /app/src
+
+ENV IP_ADDR=localhost
 
 CMD ["python", "app_collector_local.py"]
