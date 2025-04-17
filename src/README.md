@@ -7,9 +7,16 @@ This code currently assumes all machines are in the same network and can communi
 
 ## Collecting metrics
 ### Server side
+### Preparing the environment
+Run the following command:
+```bash
+source env.sh
+```
+
+This command fetches your machine's IP address and updates .env with it. Make sure to update the machines you want to monitor's .env files with **your** address.
+
 #### Install Docker
 Open a new terminal (CTRL+ALT+T), then run:
-
 ```bash
 sudo pacman -S docker-compose
 ```
@@ -49,3 +56,18 @@ Then, run:
 ```bash
 python3 app_collector_local.py
 ```
+
+To stop monitoring, press CTRL+C.
+
+### Running with Docker
+Run the following command:
+```bash
+sudo docker compose up
+```
+
+To stop monitoring, run the following command in another terminal:
+```bash
+sudo docker compose down
+```
+
+**Obs. You don't need to use sudo if docker is already in your sudo group.**
