@@ -7,7 +7,7 @@ This code currently assumes all machines are in the same network and can communi
 
 ## Collecting metrics
 ### Server side
-#### Preparing the environment
+### Preparing the environment
 Run the following command:
 ```bash
 source env.sh
@@ -31,7 +31,7 @@ sudo docker pull otel/opentelemetry-collector
 #### Run OpenTelemetry Collector
 Then, all you have to do is run the following command:
 ```bash
-sudo docker run --rm -p 4318:4318 -p 8889:8889 -v "$(pwd)/otel_collector_config.yaml":/etc/otelcol/config.yaml otel/opentelemetry-collector:latest
+sudo docker compose -f docker-compose-server.yml up
 ```
 
 ### Client side
@@ -59,15 +59,15 @@ python3 app_collector_local.py
 
 To stop monitoring, press CTRL+C.
 
-#### Running with Docker
+### Running with Docker
 Run the following command:
 ```bash
-sudo docker compose up
+sudo docker compose -f docker-compose-client.yml up
 ```
 
 To stop monitoring, run the following command in another terminal:
 ```bash
-sudo docker compose down
+sudo docker compose -f docker-compose-client.yml down
 ```
 
 **Obs. You don't need to use sudo if docker is already in your sudo group.**
