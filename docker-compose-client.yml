@@ -1,0 +1,9 @@
+services:
+  app_collector_local:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_collector_local
+    environment:
+      - IP_ADDR=${IP_ADDR}
+    restart: unless-stopped
