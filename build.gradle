@@ -1,0 +1,5 @@
+android {
+    defaultConfig {
+        buildConfigField "String", "IP_ADDR", "\"${System.getenv("IP_ADDR") ?: "default_value"}\""
+    }
+}
