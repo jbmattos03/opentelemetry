@@ -3,3 +3,9 @@
 
 # Ignore .env
 .env
+
+# Ignore .txt
+*.txt
+
+# Ignore .gradle
+.gradle
