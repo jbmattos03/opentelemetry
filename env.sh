@@ -22,5 +22,5 @@ fi
 if grep -q "^hostname=" ./.env; then
     sed -i "s/^hostname=.*/hostname=$hostname/" ./.env
 else
-    echo "IP_ADDR=$hostname" >> ./.env
+    echo "hostname=$hostname" >> ./.env
 fi
