@@ -44,8 +44,7 @@ class SystemMonitor:
         This method sets up the resource.
         The resource is used to identify the source of the metrics.
         """
-        hostname = socket.gethostname()
-        self.resource = Resource.create({SERVICE_NAME: f"{hostname}_system_monitor"})
+        self.resource = Resource.create({SERVICE_NAME: f"{os.getenv('hostname')}_system_monitor"})
 
     def set_exporters(self):
         """

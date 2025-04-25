@@ -6,4 +6,5 @@ services:
     container_name: app_collector_local
     environment:
       - IP_ADDR=${IP_ADDR}
+      - hostname=${hostname}
     restart: unless-stopped
