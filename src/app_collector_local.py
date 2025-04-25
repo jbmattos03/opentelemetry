@@ -18,8 +18,7 @@ import socket
 
 from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters, disk_io_counters
 from opentelemetry import metrics
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.resources import SERVICE_NAME
+from opentelemetry.sdk.resources import Resource, SERVICE_NAME
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
@@ -44,7 +43,7 @@ class SystemMonitor:
         This method sets up the resource.
         The resource is used to identify the source of the metrics.
         """
-        self.resource = Resource.create({SERVICE_NAME: f"{os.getenv('hostname')}_system_monitor"})
+        self.resource = Resource.create({SERVICE_NAME: f"{os.getenv('HOST')}_system_monitor"})
 
     def set_exporters(self):
         """

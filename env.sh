@@ -1,6 +1,6 @@
 #!/bin/bash
 IP_ADDRESS=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
-hostname=$(hostnamectl | grep -oP "Static hostname\s*: \K.+")
+HOST=$(hostnamectl | grep -oP "Static hostname\s*: \K.+")
 
 # Check if the .env file exists; if not, create it
 if [ ! -e ".env" ]; then
@@ -16,11 +16,11 @@ else
     echo "IP_ADDR=$IP_ADDRESS" >> ./.env
 fi
 
-# Check if the hostname variable exists in the .env file
+# Check if the HOSTNAME variable exists in the .env file
 # If it does, update it
 # If not, add it
-if grep -q "^hostname=" ./.env; then
-    sed -i "s/^hostname=.*/hostname=$hostname/" ./.env
+if grep -q "^HOST=" ./.env; then
+    sed -i "s/^HOST=.*/HOST=$HOST/" ./.env
 else
-    echo "hostname=$hostname" >> ./.env
+    echo "HOST=$HOST" >> ./.env
 fi
