@@ -1,10 +1,10 @@
 """
-This script monitors the CPU and RAM usage of a system using OpenTelemetry and Prometheus.
-It collects the metrics every 5 seconds and sends them to the OpenTelemetry Collector, which
-then exposes them to Prometheus.
+This script collects metrics such as CPU/RAM usage, disk usage, etc. every 5 seconds and sends them to the OpenTelemetry Collector,
+which then exposes them to Prometheus.
 
-The script uses the psutil library to collect the CPU and RAM usage metrics.
-The OpenTelemetry libraries are used to set up the monitoring system and collect the metrics.
+The script uses the psutil library to collect the metrics.
+It also uses OpenTelemetry to create and manage the metrics.
+The script also uses an AlertManager class to manage alerts.
 The program uses an OOP approach to organize the code and make it more modular.
 """
 
@@ -23,7 +23,7 @@ from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 
-# ===================================================================
+# =================================================================================
 
 # Loading environment variables
 load_dotenv(find_dotenv(), override=True)
@@ -37,7 +37,6 @@ class SystemMonitor:
         self.set_metrics()
         self.set_resource()
         self.alert_manager = AlertManager()
-
 
     # =============== OpenTelemetry Setup ===============
     def set_resource(self):
@@ -133,7 +132,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         cpu_usage = cpu_percent(interval=None)
-        self.alert_manager.check_alerts("cpu_usage", cpu_usage)
+        self.alert_manager.check_alerts("cpu_usage", cpu_usage, os.getenv("HOST"))
 
         return [metrics.Observation(value=cpu_usage, attributes={})]
     
@@ -147,7 +146,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         ram_usage = virtual_memory().percent
-        self.alert_manager.check_alerts("memory_usage", ram_usage)
+        self.alert_manager.check_alerts("memory_usage", ram_usage, os.getenv("HOST"))
 
         return [metrics.Observation(value=ram_usage, attributes={})]
     
@@ -161,7 +160,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         disk_total = disk_usage("/").percent
-        self.alert_manager.check_alerts("disk_usage", disk_total)
+        self.alert_manager.check_alerts("disk_usage", disk_total, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_total, attributes={})]
     
@@ -175,7 +174,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         disk_read = disk_io_counters().read_bytes
-        self.alert_manager.check_alerts("disk_read", disk_read)
+        self.alert_manager.check_alerts("disk_read", disk_read, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_read, attributes={})]
     
@@ -189,7 +188,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         disk_write = disk_io_counters().write_bytes
-        self.alert_manager.check_alerts("disk_write", disk_write)
+        self.alert_manager.check_alerts("disk_write", disk_write, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_write, attributes={})]
     
@@ -203,7 +202,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         net_sent = net_io_counters().bytes_sent
-        self.alert_manager.check_alerts("network_sent", net_sent)
+        self.alert_manager.check_alerts("network_sent", net_sent, os.getenv("HOST"))
 
         return [metrics.Observation(value=net_sent, attributes={})]
     
