@@ -68,7 +68,7 @@ class AlertManager:
             else:
                 print(f"Alert {alert} not found.")
 
-    def check_alerts(self, alert, value):
+    def check_alerts(self, alert, value, host):
         """
         This method checks the alerts.
         The alerts are used to notify the user when a certain condition is met.
@@ -77,6 +77,7 @@ class AlertManager:
             # Add a time stamp for the alert
             alert_event = {
                 "alert": alert,
+                "host": host,
                 "value": value,
                 "threshold": self.alerts[alert]["threshold"],
                 "message": self.alerts[alert]["message"],
