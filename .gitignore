@@ -4,8 +4,9 @@
 # Ignore .env
 .env
 
-# Ignore .txt
-*.txt
+# Ignore txt files
+docker.txt
+docker-compose.yml.txt
 
 # Ignore .gradle
 .gradle
