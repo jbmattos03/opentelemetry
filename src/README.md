@@ -15,8 +15,16 @@ source env.sh
 
 This command fetches your machine's IP address and updates .env with it. Make sure to update the machines you want to monitor's .env files with **your** address.
 
-#### Install Docker
-Open a new terminal (CTRL+ALT+T), then run:
+#### Install Docker Compose
+First, let's make sure docker compose is installed. Open a new terminal (CTRL+ALT+T), then run:
+```bash
+sudo pacman -Ss docker-compose
+```
+
+You should see something like this:
+![A screenshot of the execution of the command above. It shows that docker-compose is installed on the system in version 2.34.0-1.](../imgs/image-2.png)
+
+If it's not installed, run:
 ```bash
 sudo pacman -S docker-compose
 ```
@@ -31,15 +39,25 @@ sudo docker pull otel/opentelemetry-collector
 #### Run OpenTelemetry Collector
 Then, all you have to do is run the following command:
 ```bash
-sudo docker compose -f docker-compose-server.yml up
+./run_project.sh -s
+```
+
+To stop the OpenTelemetry Collector container, run:
+```bash
+./run_project.sh -s -d
 ```
 
 ### Client side
 #### Set up environment variables
-Based on **.env_example.txt**, create a **.env** file in OpenTelemetry/ and replace <central_collector_IP> with your server's actual IP address.
+Run the following command:
+```bash
+source env.sh
+```
+
+Then, replace the IP address in `IP_ADDR` with your server's IP address.
 
 #### (Optional) Make sure the server is reachable
-Replace "central_collector_IP" in the following command with your server's actual IP address.
+Replace `central_collector_IP` in the following command with your server's actual IP address.
 ```bash
 ping central_collector_IP
 ```
@@ -47,27 +65,11 @@ ping central_collector_IP
 If it fails, make sure your machine is in the same network as the server machine.
 
 #### Collect metrics
-First, go to src:
 ```bash
-cd src
+./run_project.sh -c
 ```
 
-Then, run:
+To stop monitoring, run:
 ```bash
-python3 app_collector_local.py
+./run_project -c -d
 ```
-
-To stop monitoring, press CTRL+C.
-
-### Running with Docker
-Run the following command:
-```bash
-sudo docker compose -f docker-compose-client.yml up
-```
-
-To stop monitoring, run the following command in another terminal:
-```bash
-sudo docker compose -f docker-compose-client.yml down
-```
-
-**Obs. You don't need to use sudo if docker is already in your sudo group.**
