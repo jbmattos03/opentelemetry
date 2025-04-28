@@ -14,7 +14,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 import time
 import os
 from dotenv import load_dotenv, find_dotenv
-import socket
+from alert_manager import AlertManager
 
 from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters, disk_io_counters
 from opentelemetry import metrics
@@ -36,6 +36,8 @@ class SystemMonitor:
         self.set_meter()
         self.set_metrics()
         self.set_resource()
+        self.alert_manager = AlertManager()
+
 
     # =============== OpenTelemetry Setup ===============
     def set_resource(self):
@@ -128,9 +130,13 @@ class SystemMonitor:
         It uses the psutil library to get the CPU usage percentage.
         The CPU usage percentage is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=cpu_percent(interval=None), attributes={})]
+        cpu_usage = cpu_percent(interval=None)
+        self.alert_manager.check_alerts("cpu_usage", cpu_usage)
 
+        return [metrics.Observation(value=cpu_usage, attributes={})]
+    
     # Callback function for Total RAM Usage metric
     def ram_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
@@ -138,8 +144,12 @@ class SystemMonitor:
         It uses the psutil library to get the RAM usage percentage.
         The RAM usage percentage is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=virtual_memory().percent, attributes={})]
+        ram_usage = virtual_memory().percent
+        self.alert_manager.check_alerts("memory_usage", ram_usage)
+
+        return [metrics.Observation(value=ram_usage, attributes={})]
     
     # Callback function for Total Disk Usage metric
     def disk_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
@@ -148,8 +158,12 @@ class SystemMonitor:
         It uses the psutil library to get the Disk usage percentage.
         The Disk usage percentage is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=disk_usage("/").percent, attributes={})]
+        disk_total = disk_usage("/").percent
+        self.alert_manager.check_alerts("disk_usage", disk_total)
+
+        return [metrics.Observation(value=disk_total, attributes={})]
     
     # Callback function for Disk Read metric
     def disk_read_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
@@ -158,8 +172,12 @@ class SystemMonitor:
         It uses the psutil library to get the Disk read in bytes.
         The Disk read in bytes is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=disk_io_counters().read_bytes, attributes={})]
+        disk_read = disk_io_counters().read_bytes
+        self.alert_manager.check_alerts("disk_read", disk_read)
+
+        return [metrics.Observation(value=disk_read, attributes={})]
     
     # Callback function for Disk Write metric
     def disk_write_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
@@ -168,8 +186,12 @@ class SystemMonitor:
         It uses the psutil library to get the Disk write in bytes.
         The Disk write in bytes is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=disk_io_counters().write_bytes, attributes={})]
+        disk_write = disk_io_counters().write_bytes
+        self.alert_manager.check_alerts("disk_write", disk_write)
+
+        return [metrics.Observation(value=disk_write, attributes={})]
     
     # Callback functions for Network Sent metric
     def network_sent_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
@@ -178,8 +200,12 @@ class SystemMonitor:
         It uses the psutil library to get the Network sent in bytes.
         The Network sent in bytes is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=net_io_counters().bytes_sent, attributes={})]
+        net_sent = net_io_counters().bytes_sent
+        self.alert_manager.check_alerts("network_sent", net_sent)
+
+        return [metrics.Observation(value=net_sent, attributes={})]
     
     # Callback function for Network Received metric
     def network_recv_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
@@ -188,8 +214,12 @@ class SystemMonitor:
         It uses the psutil library to get the Network sent in bytes.
         The Network sent in bytes is returned as an observation.
         The observation is a list of metrics.Observation objects.
+        It also checks for alerts using the AlertManager class.
         """
-        return [metrics.Observation(value=net_io_counters().bytes_recv, attributes={})]
+        net_recv = net_io_counters().bytes_recv
+        self.alert_manager.check_alerts("network_recv", net_recv)
+
+        return [metrics.Observation(value=net_recv, attributes={})]
 
     # =============== Run Function ===============
     def run(self):
