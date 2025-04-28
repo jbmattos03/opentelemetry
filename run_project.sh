@@ -2,9 +2,10 @@
 
 start_server=false
 start_client=false
+build=false
 down=false
 
-while getopts "scdh" opt; do
+while getopts "scdbh" opt; do
     case $opt in
         s)
             start_server=true
@@ -15,10 +16,15 @@ while getopts "scdh" opt; do
         d)
             down=true
             ;;
+        b)
+            build=true
+            ;;
         h)
-            echo "Usage: $0 [-s] [-c] [-h]"
+            echo "Usage: $0 [-s] [-c] [-d] [-b] [-h]"
             echo "  -s  Start the server"
             echo "  -c  Start the client"
+            echo "  -d  Stop a container. Use with -s and/or -c"
+            echo "  -b  Build the images"
             echo "  -h  Show this help message"
             exit 0
             ;;
@@ -30,6 +36,12 @@ while getopts "scdh" opt; do
 done
 
 # Executing commands
+if [[ $build == true ]]; then
+    echo "Building images..."
+    docker compose -f docker-compose-server.yml build
+    docker compose -f docker-compose-client.yml build
+fi
+
 if [[ $start_server == true && $down == false ]]; then
     echo "Starting server..."
     docker compose -f docker-compose-server.yml up -d
