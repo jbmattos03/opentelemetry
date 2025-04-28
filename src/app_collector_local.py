@@ -216,7 +216,7 @@ class SystemMonitor:
         It also checks for alerts using the AlertManager class.
         """
         net_recv = net_io_counters().bytes_recv
-        self.alert_manager.check_alerts("network_recv", net_recv)
+        self.alert_manager.check_alerts("network_recv", net_recv, os.getenv("HOST"))
 
         return [metrics.Observation(value=net_recv, attributes={})]
 
