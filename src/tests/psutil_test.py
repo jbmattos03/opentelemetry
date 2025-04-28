@@ -29,6 +29,28 @@ try:
         print(f"Disk Read: {disk_read:.2f} MB")
         print(f"Disk Write: {disk_write:.2f} MB")
 
+        # Get battery status
+        battery = psutil.sensors_battery()
+        if battery:
+            battery_percentage = battery.percent
+            battery_status = "Charging" if battery.power_plugged else "Not Charging"
+            print(f"Battery Percentage: {battery_percentage}%")
+            print(f"Battery Status: {battery_status}")
+        else:
+            print("Battery information not available.")
+
+        # Get temperature (if available)
+        try:
+            temperature = psutil.sensors_temperatures()
+            if temperature:
+                for name, entries in temperature.items():
+                    for entry in entries:
+                        print(f"{name} - {entry.label or 'temp'}: {entry.current}°C")
+            else:
+                print("Temperature information not available.")
+        except AttributeError:
+            print("Temperature information not available.")
+
         print("=" * 10)
 
         time.sleep(5)
