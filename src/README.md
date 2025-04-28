@@ -22,6 +22,7 @@ sudo pacman -Ss docker-compose
 ```
 
 You should see something like this:
+
 ![A screenshot of the execution of the command above. It shows that docker-compose is installed on the system in version 2.34.0-1.](../imgs/image-2.png)
 
 If it's not installed, run:
@@ -71,5 +72,5 @@ If it fails, make sure your machine is in the same network as the server machine
 
 To stop monitoring, run:
 ```bash
-./run_project -c -d
+./run_project.sh -c -d
 ```
