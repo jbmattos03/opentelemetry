@@ -13,6 +13,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 # Importing libraries
 import time
 import os
+import platform
 from dotenv import load_dotenv, find_dotenv
 from alert_manager import AlertManager
 
@@ -36,7 +37,8 @@ class SystemMonitor:
         self.set_meter()
         self.set_metrics()
         self.set_resource()
-        self.alert_manager = AlertManager()
+        self.detect_device_type()
+        self.alert_manager = AlertManager(self.device_type)
 
     # =============== OpenTelemetry Setup ===============
     def set_resource(self):
@@ -243,6 +245,20 @@ class SystemMonitor:
             print("Monitoring stopped.")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+    # =============== Detect Device Function ===============
+    def detect_device_type(self):
+        """
+        Detects the type of device based on the system information.
+        """
+        architecture = platform.uname().machine
+
+        if "arm" in architecture.lower():
+            self.device_type = "Mobile"
+        elif "x86" in architecture.lower() or "x64" in architecture.lower():
+            self.device_type = "Desktop"
+        else:
+            self.device_type = "Unknown"
 
 # =================================================================================
 
