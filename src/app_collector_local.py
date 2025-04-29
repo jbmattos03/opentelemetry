@@ -251,14 +251,14 @@ class SystemMonitor:
         """
         Detects the type of device based on the system information.
         """
-        architecture = uname().machine
+        system = uname().system
 
-        if "arm" in architecture.lower():
-            self.device_type = "Mobile"
-        elif "x86" in architecture.lower() or "x64" in architecture.lower():
+        if system == "Linux" or system == "Windows" or system == "Darwin":
             self.device_type = "Desktop"
         else:
-            self.device_type = "Unknown"
+            self.device_type = "Mobile"
+
+        print(f"Detected device type: {self.device_type}")
 
 # =================================================================================
 
