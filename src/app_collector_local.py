@@ -13,7 +13,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 # Importing libraries
 import time
 import os
-from platform import uname
+import sys
 from dotenv import load_dotenv, find_dotenv
 from alert_manager import AlertManager
 
@@ -251,12 +251,14 @@ class SystemMonitor:
         """
         Detects the type of device based on the system information.
         """
-        system = uname().system
+        is_android: bool = hasattr(sys, 'getandroidapilevel')
 
-        if system == "Linux" or system == "Windows" or system == "Darwin":
+        if is_android:
+            self.device_type = "Android"
+        elif sys.platform.startswith("linux") or sys.platform.startswith("darwin") or sys.platform.startswith("win"):
             self.device_type = "Desktop"
         else:
-            self.device_type = "Mobile"
+            self.device_type = "Unknown"
 
         print(f"Detected device type: {self.device_type}")
 
