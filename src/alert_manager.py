@@ -8,8 +8,9 @@ The alerts are used to notify the user when a certain condition is met.
 import os, json, datetime
 
 class AlertManager:
-    def __init__(self):
+    def __init__(self, device_type):
         self.set_alerts()
+        self.device_type = device_type
 
     def add_alert(self, alert_name, threshold, message):
         """
@@ -21,7 +22,7 @@ class AlertManager:
             "message": message,
         }
 
-    def set_alerts(self):
+    def set_alerts(self, device_type):
         """
         This method sets up the alerts.
         The alerts are used to notify the user when a certain condition is met.
@@ -56,6 +57,15 @@ class AlertManager:
                 "message": "Network received is above 50MB",
             },
         }
+
+        if device_type == "Mobile":
+            self.alerts["cpu_usage"]["threshold"] = 40
+            self.alerts["memory_usage"]["threshold"] = 30
+            self.alerts["disk_usage"]["threshold"] = 90
+            self.alerts["disk_read"]["threshold"] = 200000000
+            self.alerts["disk_write"]["threshold"] = 200000000
+            self.alerts["network_sent"]["threshold"] = 100000000
+            self.alerts["network_recv"]["threshold"] = 100000000
 
     def delete_alerts(self, alerts):
         """
