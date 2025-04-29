@@ -13,7 +13,7 @@ The program uses an OOP approach to organize the code and make it more modular.
 # Importing libraries
 import time
 import os
-import platform
+from platform import uname
 from dotenv import load_dotenv, find_dotenv
 from alert_manager import AlertManager
 
@@ -251,7 +251,7 @@ class SystemMonitor:
         """
         Detects the type of device based on the system information.
         """
-        architecture = platform.uname().machine
+        architecture = uname().machine
 
         if "arm" in architecture.lower():
             self.device_type = "Mobile"

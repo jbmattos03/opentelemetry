@@ -9,8 +9,8 @@ import os, json, datetime
 
 class AlertManager:
     def __init__(self, device_type):
-        self.set_alerts()
         self.device_type = device_type
+        self.set_alerts(device_type)
 
     def add_alert(self, alert_name, threshold, message):
         """
