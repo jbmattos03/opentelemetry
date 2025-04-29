@@ -255,8 +255,12 @@ class SystemMonitor:
 
         if is_android:
             self.device_type = "Android"
-        elif sys.platform.startswith("linux") or sys.platform.startswith("darwin") or sys.platform.startswith("win"):
-            self.device_type = "Desktop"
+        elif sys.platform.startswith("linux"):
+            self.device_type = "Linux"
+        elif sys.platform.startswith("darwin"):
+            self.device_type = "MacOS"
+        elif sys.platform.startswith("win"):
+            self.device_type = "Windows"
         else:
             self.device_type = "Unknown"
 

@@ -15,62 +15,91 @@ class AlertManager:
     def add_alert(self, alert_name, threshold, message):
         """
         This method adds a new alert.
-        The alert is used to notify the user when a certain condition is met.
         """
-        self.alerts[alert_name] = {
-            "threshold": threshold,
-            "message": message,
-        }
+        if self.device_type == "Mobile":
+            self.alerts[alert_name] = {
+                "threshold": threshold[0],
+                "message": message,
+            }
+        elif self.device_type == "Desktop":
+            self.alerts[alert_name] = {
+                "threshold": threshold[1],
+                "message": message,
+            }
+        else:
+            self.alerts[alert_name] = {
+                "threshold": threshold[2],
+                "message": message,
+            }
 
     def set_alerts(self, device_type):
         """
         This method sets up the alerts.
-        The alerts are used to notify the user when a certain condition is met.
+        The thresholds are set based on the device type.
+        The default thresholds are set for Android, Linux, Windows, and MacOS.
         """
-        self.alerts = {
-            "cpu_usage": {
-                "threshold": 50,
-                "message": "CPU usage is above 50%",
+        default_thresholds = {
+            "cpu_usage": 50,
+            "memory_usage": 50,
+            "disk_usage": 50,
+            "disk_read": 100000000,
+            "disk_write": 100000000,
+            "network_sent": 50000000,
+            "network_recv": 50000000,
+        }
+
+        device_specific_thresholds = {
+            "Android": {
+                "cpu_usage": 40,
+                "memory_usage": 30,
+                "disk_usage": 90,
+                "disk_read": 100000000,
+                "disk_write": 100000000,
+                "network_sent": 10000000,
+                "network_recv": 10000000,
             },
-            "memory_usage": {
-                "threshold": 60,
-                "message": "Memory usage is above 60%",
+            "Linux": {
+                "cpu_usage": 50,
+                "memory_usage": 60,
+                "disk_usage": 80,
+                "disk_read": 400000000,
+                "disk_write": 400000000,
+                "network_sent": 10000000,
+                "network_recv": 10000000,
             },
-            "disk_usage": {
-                "threshold": 80,
-                "message": "Disk usage is above 80%",
+            "Windows": {
+                "cpu_usage": 50,
+                "memory_usage": 60,
+                "disk_usage": 80,
+                "disk_read": 400000000,
+                "disk_write": 400000000,
+                "network_sent": 10000000,
+                "network_recv": 10000000,
             },
-            "disk_read": {
-                "threshold": 100000000,
-                "message": "Disk read is above 100MB",
-            },
-            "disk_write": {
-                "threshold": 100000000,
-                "message": "Disk write is above 100MB",
-            },
-            "network_sent": {
-                "threshold": 50000000,
-                "message": "Network sent is above 50MB",
-            },
-            "network_recv": {
-                "threshold": 50000000,
-                "message": "Network received is above 50MB",
+            "MacOS": {
+                "cpu_usage": 50,
+                "memory_usage": 60,
+                "disk_usage": 80,
+                "disk_read": 400000000,
+                "disk_write": 400000000,
+                "network_sent": 10000000,
+                "network_recv": 10000000,
             },
         }
 
-        if device_type == "Mobile":
-            self.alerts["cpu_usage"]["threshold"] = 40
-            self.alerts["memory_usage"]["threshold"] = 30
-            self.alerts["disk_usage"]["threshold"] = 90
-            self.alerts["disk_read"]["threshold"] = 200000000
-            self.alerts["disk_write"]["threshold"] = 200000000
-            self.alerts["network_sent"]["threshold"] = 100000000
-            self.alerts["network_recv"]["threshold"] = 100000000
+        thresholds = device_specific_thresholds.get(device_type, default_thresholds)
+
+        self.alerts = {
+            metric: {
+                "threshold": thresholds.get(metric, default_thresholds[metric]),
+                "message": f"{metric.replace('_', ' ').capitalize()} is above {thresholds.get(metric, default_thresholds[metric])}",
+            }
+            for metric in default_thresholds
+        }
 
     def delete_alerts(self, alerts):
         """
         This method deletes the alerts.
-        The alerts are used to notify the user when a certain condition is met.
         """
         for alert in alerts:
             if alert in self.alerts:
@@ -78,10 +107,31 @@ class AlertManager:
             else:
                 print(f"Alert {alert} not found.")
 
+    def dump_alerts(self, alert_event):
+        """
+        This method dumps the alerts to a JSON file.
+        """
+        # Load existing alerts from the JSON file
+        alerts_list = []
+        if os.path.exists("alerts.json"):
+            with open("alerts.json", "r") as f:
+                try:
+                    alerts_list = json.load(f)
+                except Exception as e:
+                    print(f"Error loading alerts: {e}")
+                    alerts_list = []
+            
+        # Append the new alert event to the list
+        alerts_list.append(alert_event)
+
+        # Write the updated alerts list back to the JSON file
+        with open("alerts.json", "w") as f:
+            json.dump(alerts_list, f, indent=4)
+
+
     def check_alerts(self, alert, value, host):
         """
         This method checks the alerts.
-        The alerts are used to notify the user when a certain condition is met.
         """
         if alert in self.alerts and value >= self.alerts[alert]["threshold"]:
             # Add a time stamp for the alert
@@ -94,19 +144,5 @@ class AlertManager:
                 "timestamp": datetime.datetime.now().strftime('%H:%M:%S')
             }
 
-            # Load existing alerts from the JSON file
-            alerts_list = []
-            if os.path.exists("alerts.json"):
-                with open("alerts.json", "r") as f:
-                    try:
-                        alerts_list = json.load(f)
-                    except Exception as e:
-                        print(f"Error loading alerts: {e}")
-                        alerts_list = []
-            
-            # Append the new alert event to the list
-            alerts_list.append(alert_event)
-
-            # Write the updated alerts list back to the JSON file
-            with open("alerts.json", "w") as f:
-                json.dump(alerts_list, f, indent=4)
+            # Dump the alert event to a JSON file
+            self.dump_alerts(alert_event)
