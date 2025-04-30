@@ -11,4 +11,6 @@ WORKDIR /app/src
 
 ENV IP_ADDR=localhost
 
-CMD ["python", "app_collector_local.py"]
+RUN python setup.py build_ext --inplace
+
+CMD ["python", "main.py"]
