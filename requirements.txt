@@ -5,3 +5,5 @@ opentelemetry-exporter-otlp-proto-http
 prometheus_client
 psutil
 dotenv
+setuptools
+cython
