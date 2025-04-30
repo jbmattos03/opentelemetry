@@ -14,7 +14,6 @@ The program uses an OOP approach to organize the code and make it more modular.
 import time
 import os
 import sys
-from dotenv import load_dotenv, find_dotenv
 from alert_manager import AlertManager
 
 from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters, disk_io_counters
@@ -23,11 +22,6 @@ from opentelemetry.sdk.resources import Resource, SERVICE_NAME
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
-
-# =================================================================================
-
-# Loading environment variables
-load_dotenv(find_dotenv(), override=True)
 
 # =================================================================================
 
@@ -265,19 +259,3 @@ class SystemMonitor:
             self.device_type = "Unknown"
 
         print(f"Detected device type: {self.device_type}")
-
-# =================================================================================
-
-# Main function
-def main():
-    # Create an instance of the SystemMonitor class
-    system_monitor = SystemMonitor()
-
-    # Run the monitoring system
-    system_monitor.run()
-
-
-# =================================================================================
-
-if __name__ == "__main__":
-    main()
