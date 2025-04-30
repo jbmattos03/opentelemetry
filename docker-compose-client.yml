@@ -9,3 +9,4 @@ services:
     restart: unless-stopped
     volumes:
       - ./src/alerts.json:/app/src/alerts.json
+      - /etc/localtime:/etc/localtime:ro
