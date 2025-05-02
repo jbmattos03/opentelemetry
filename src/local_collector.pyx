@@ -1,13 +1,3 @@
-"""
-This script collects metrics such as CPU/RAM usage, disk usage, etc. every 5 seconds and sends them to the OpenTelemetry Collector,
-which then exposes them to Prometheus.
-
-The script uses the psutil library to collect the metrics.
-It also uses OpenTelemetry to create and manage the metrics.
-The script also uses an AlertManager class to manage alerts.
-The program uses an OOP approach to organize the code and make it more modular.
-"""
-
 # =================================================================================
 
 # Importing libraries
@@ -32,13 +22,29 @@ load_dotenv(find_dotenv(), override=True)
 
 # =================================================================================
 
-class SystemMonitor:
+cdef class SystemMonitor:
+    cdef object resource
+    cdef object collector_exporter
+    cdef object collector_reader
+    cdef object meter
+    cdef object provider
+    cdef object cpu_gauge
+    cdef object ram_gauge
+    cdef object disk_usage
+    cdef object disk_read
+    cdef object disk_write
+    cdef object network_sent
+    cdef object network_recv
+    cdef object alert_manager
+    cdef str device_type
+    cdef bint running
+
     def __init__(self):
         self.set_exporters()
         self.set_meter()
         self.set_metrics()
         self.set_resource()
-        self.detect_device_type()
+        self.device_type = self.detect_device_type()
         self.alert_manager = AlertManager(self.device_type)
 
     # =============== OpenTelemetry Setup ===============
@@ -126,7 +132,7 @@ class SystemMonitor:
         )
 
     # Callback function for Total CPU usage metric
-    def cpu_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef cpu_callback(self, object options):
         """
         This method is called every 5 seconds to collect the CPU usage metrics.
         It uses the psutil library to get the CPU usage percentage.
@@ -142,7 +148,7 @@ class SystemMonitor:
         return [metrics.Observation(value=cpu_usage, attributes={})]
     
     # Callback function for Total RAM Usage metric
-    def ram_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef ram_callback(self, object options):
         """
         This method is called every 5 seconds to collect the RAM usage metrics.
         It uses the psutil library to get the RAM usage percentage.
@@ -158,23 +164,24 @@ class SystemMonitor:
         return [metrics.Observation(value=ram_usage, attributes={})]
     
     # Callback function for Total Disk Usage metric
-    def disk_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef disk_callback(self, object options):
         """
         This method is called every 5 seconds to collect the Disk usage metrics.
-        It uses the psutil library to get the Disk usage percentage.
-        The Disk usage percentage is returned as an observation.
+        It uses the psutil library to get the Disk busy time in milliseconds
+        during 4 seconds, then divides it by 4000 to get the percentage.
+        The Disk busy time percentage is returned as an observation.
         The observation is a list of metrics.Observation objects.
         It also checks for alerts using the AlertManager class.
         """
         cdef double disk_total
+        disk_total = disk_io_counters().busy_time / 1000
 
-        disk_total = disk_usage("/").percent
-        self.alert_manager.check_alerts("disk_usage", disk_total, os.getenv("HOST"))
+        self.alert_manager.check_alerts("disk_total", disk_total, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_total, attributes={})]
     
     # Callback function for Disk Read metric
-    def disk_read_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef disk_read_callback(self, object options):
         """
         This method is called every 5 seconds to collect the Disk read metrics.
         It uses the psutil library to get the Disk read in bytes.
@@ -190,7 +197,7 @@ class SystemMonitor:
         return [metrics.Observation(value=disk_read, attributes={})]
     
     # Callback function for Disk Write metric
-    def disk_write_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef disk_write_callback(self, object options):
         """
         This method is called every 5 seconds to collect the Disk write metrics.
         It uses the psutil library to get the Disk write in bytes.
@@ -206,7 +213,7 @@ class SystemMonitor:
         return [metrics.Observation(value=disk_write, attributes={})]
     
     # Callback functions for Network Sent metric
-    def network_sent_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef network_sent_callback(self, object options):
         """
         This method is called every 5 seconds to collect Network metrics (sent).
         It uses the psutil library to get the Network sent in bytes.
@@ -222,7 +229,7 @@ class SystemMonitor:
         return [metrics.Observation(value=net_sent, attributes={})]
     
     # Callback function for Network Received metric
-    def network_recv_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
+    cpdef list network_recv_callback(self, object options):
         """
         This method is called every 5 seconds to collect Network metrics (received).
         It uses the psutil library to get the Network sent in bytes.
@@ -266,17 +273,18 @@ class SystemMonitor:
         """
         Detects the type of device based on the system information.
         """
-        cdef bint is_android = hasattr(sys, 'getandroidapilevel')
-
-        if is_android:
-            self.device_type = "Android"
-        elif sys.platform.startswith("linux"):
-            self.device_type = "Linux"
-        elif sys.platform.startswith("darwin"):
-            self.device_type = "MacOS"
-        elif sys.platform.startswith("win"):
-            self.device_type = "Windows"
-        else:
-            self.device_type = "Unknown"
-
-        print(f"Detected device type: {self.device_type}")
+        try:
+            if hasattr(sys, 'getandroidapilevel'):
+                return "Android"
+            elif sys.platform.startswith("linux"):
+                return "Linux"
+            elif sys.platform.startswith("darwin"):
+                return "MacOS"
+            elif sys.platform.startswith("win"):
+                return "Windows"
+            else:
+                return str("Unknown")
+        except AttributeError as e:
+            print(f"Error detecting device type: {e}")
+            return "Unknown"
+            

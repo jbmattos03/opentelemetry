@@ -16,7 +16,7 @@ import os
 import sys
 from alert_manager import AlertManager
 
-from psutil import cpu_percent, virtual_memory, disk_usage, net_io_counters, disk_io_counters
+from psutil import cpu_percent, virtual_memory, net_io_counters, disk_io_counters
 from opentelemetry import metrics
 from opentelemetry.sdk.resources import Resource, SERVICE_NAME
 from opentelemetry.sdk.metrics import MeterProvider
@@ -150,12 +150,14 @@ class SystemMonitor:
     def disk_callback(self, options: metrics.CallbackOptions) -> list[metrics.Observation]:
         """
         This method is called every 5 seconds to collect the Disk usage metrics.
-        It uses the psutil library to get the Disk usage percentage.
-        The Disk usage percentage is returned as an observation.
+        It uses the psutil library to get the Disk busy time in milliseconds
+        during 4 seconds, then divides it by 4000 to get the percentage.
+        The Disk busy time percentage is returned as an observation.
         The observation is a list of metrics.Observation objects.
         It also checks for alerts using the AlertManager class.
         """
-        disk_total = disk_usage("/").percent
+        disk_total = disk_io_counters().busy_time / 1000
+
         self.alert_manager.check_alerts("disk_usage", disk_total, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_total, attributes={})]
@@ -169,7 +171,7 @@ class SystemMonitor:
         The observation is a list of metrics.Observation objects.
         It also checks for alerts using the AlertManager class.
         """
-        disk_read = disk_io_counters().read_bytes
+        disk_read = disk_io_counters().read_time
         self.alert_manager.check_alerts("disk_read", disk_read, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_read, attributes={})]
@@ -183,7 +185,7 @@ class SystemMonitor:
         The observation is a list of metrics.Observation objects.
         It also checks for alerts using the AlertManager class.
         """
-        disk_write = disk_io_counters().write_bytes
+        disk_write = disk_io_counters().write_time
         self.alert_manager.check_alerts("disk_write", disk_write, os.getenv("HOST"))
 
         return [metrics.Observation(value=disk_write, attributes={})]
