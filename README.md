@@ -4,6 +4,7 @@
 1. [What is OpenTelemetry?](#what-is-opentelemetry)
 2. [Concepts](#concepts)
 3. [Getting started with OpenTelemetry on Python](#getting-started-with-opentelemetry-on-python)
+4. [Collecting telemetry data on multiple machines with OpenTelemetry](#collecting-telemetry-data-on-multiple-machines-with-opentelemetry)
 4. [Glossary](#glossary)
 
 ## What is OpenTelemetry?
@@ -176,8 +177,14 @@ Go to http://localhost:9090 to use Prometheus' GUI to see and query results.
 ### 3. Stop monitoring
 Press CTRL + C.
 
+## Collecting telemetry data on multiple machines with OpenTelemetry
+This project also features a more complex project utilizing the power of OpenTelemetry. This app collects metrics on multiple machines connected to the same network as one server machine running a container⁵ of OpenTelemetry Collector Core.
+
+Refer to [this file](src/README.md) to know more.
+
 ## Glossary
 1. Observability: The ability to learn about a system's status at a point in time by asking questions about it.
 2. Telemetry: The collection and transmission of the performance data of a device or product.
 3. Microservices: A type of software architecture which divides a bigger application into serveral smaller ones, each one self-sufficient, independent and representing one _responsibility_. The parts usually communicate with each other using APIs. 
 4. gRPC: Google Remote Procedure Control (gRPC) is an open code framework for communication between systems.
+5. Container: A container is a unit of software that packages both the source code and dependencies of an app in an standalone environment, with the goal of ensuring it will run regardless of the machine.
