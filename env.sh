@@ -43,3 +43,12 @@ if grep -q "^HOST=" ./.env; then
 else
     echo "HOST=$HOST" >> ./.env
 fi
+
+# Check if the BENCHMARK_MODE variable exists in the .env file
+# If it does, update it
+# If not, add it
+if grep -q "^BENCHMARK_MODE=" ./.env; then
+    sed -i "s/^BENCHMARK_MODE=.*/BENCHMARK_MODE=$BENCHMARK/" ./.env
+else
+    echo "BENCHMARK_MODE=$BENCHMARK" >> ./.env
+fi
