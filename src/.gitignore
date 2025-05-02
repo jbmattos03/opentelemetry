@@ -3,3 +3,24 @@ data
 
 # Ignore pycache
 __pycache__
+
+# Ignore .gradle
+.gradle
+
+# Ignore build
+build
+
+# Ignore tests
+tests
+
+# Ignore .json
+*.json
+
+# Ignore .o
+*.o
+
+# Ignore .so
+*.so
+
+# Ignore .c
+*.c
