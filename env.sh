@@ -1,6 +1,25 @@
 #!/bin/bash
 IP_ADDRESS=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
 HOST=$(hostnamectl | grep -oP "Static hostname\s*: \K.+")
+BENCHMARK=0
+
+while getopts "bh" opt; do
+  case $opt in
+    b)
+        BENCHMARK=1
+        ;;
+    h)
+        echo "Usage: $0 [-b] [-h]"
+        echo "  -b  Enable benchmark mode"
+        echo "  -h  Show this help message"
+        exit 0
+        ;;
+    :)
+        echo "Invalid argument" >&2
+        exit 1
+        ;;
+  esac
+done
 
 # Check if the .env file exists; if not, create it
 if [ ! -e ".env" ]; then

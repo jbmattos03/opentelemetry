@@ -6,9 +6,12 @@ The alerts are used to notify the user when a certain condition is met.
 """
 
 import os, json, datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 class AlertManager:
     def __init__(self, device_type):
+        self.benchmark_mode = os.getenv("BENCHMARK_MODE")
         self.device_type = device_type
         self.set_alerts(device_type)
 
@@ -62,10 +65,10 @@ class AlertManager:
                 "cpu_usage": 50,
                 "memory_usage": 60,
                 "disk_usage": 80,
-                "disk_read": 400000000,
-                "disk_write": 400000000,
-                "network_sent": 10000000,
-                "network_recv": 10000000,
+                "disk_read": 500000000,
+                "disk_write": 500000000,
+                "network_sent": 20000000,
+                "network_recv": 20000000,
             },
             "Windows": {
                 "cpu_usage": 50,
@@ -133,6 +136,9 @@ class AlertManager:
         """
         This method checks the alerts.
         """
+        if self.benchmark_mode in ["True", "true"]:
+            return
+        
         if alert in self.alerts and value >= self.alerts[alert]["threshold"]:
             # Add a time stamp for the alert
             alert_event = {
