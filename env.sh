@@ -1,12 +1,12 @@
 #!/bin/bash
 IP_ADDRESS=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
 HOST=$(hostnamectl | grep -oP "Static hostname\s*: \K.+")
-BENCHMARK=0
+BENCHMARK=false
 
 while getopts "bh" opt; do
   case $opt in
     b)
-        BENCHMARK=1
+        BENCHMARK=true
         ;;
     h)
         echo "Usage: $0 [-b] [-h]"
